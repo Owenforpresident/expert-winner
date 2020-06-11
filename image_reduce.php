@@ -36,8 +36,8 @@ function compress_png($path_to_png_file, $max_quality )
 }
 
 /* Loops through directory 'images' to build array of file paths as strings */
-$fileSystemIterator = new FilesystemIterator('images');
-$entries = array();
+	$fileSystemIterator = new FilesystemIterator('images');
+	$entries = array();
 foreach ($fileSystemIterator as $fileInfo){
     $entries[] = $fileInfo->getFilename();
 }
@@ -45,56 +45,82 @@ foreach ($fileSystemIterator as $fileInfo){
 /* for every file path in the entries array, find the image size and then set the compression amount and call compress function */
  foreach($entries as $image){ 
 
-	$output2 = shell_exec("identify -format '%f: %Q' images/$image");
-	$stringvalue = substr($output2, -2); 
-	$value = (int) $stringvalue; 
-	$info = getimagesize("images/$image");
 
- if ($value) {
-	switch ($value) {
-		case $value <=25:
-			compress_image("images/$image", "build/O-$value-C-90--$image", 90); 
-			break;
-		case $value >25 && $value <=50:
-			compress_image("images/$image", "build/O-$value-C-85--$image", 85); 	
-			break;
-		case $value >50 && $value <=60:
-		 	compress_image("images/$image", "build/O-$value-C-80--$image", 80); 	
-			break;
-		case $value >60 && $value <=65:
-			compress_image("images/$image", "build/O-$value-C-75--$image", 75); 	
-			break;
-		case $value >65 && $value <=75:
-			compress_image("images/$image", "build/O-$value-C-70--$image", 70); 	
-			break;
-		case $value >75 && $value <=85:
-			 compress_image("images/$image", "build/O-$value-C-65--$image", 65); 	
-			break;
-		case  $value > 85:
-			compress_image("images/$image", "build/O-$value-C-60--$image", 60);  
-		break;
-
-
-
-
-
-		
-		default:
-			compress_image("images/$image", "build/O-$value-C-85--$image", 85);  
-		break;
+		$output2 = shell_exec("identify -format '%f: %Q' images/$image");
+		$stringvalue = substr($output2, -2); 
+		$value = (int) $stringvalue; 
+		$info = getimagesize("images/$image");
+	
+	
+		if ( (strpos($image, 'default') !== false)) {
+			compress_image("images/$image", "build/C-35--$image", 35 );
 		}
-		} else { 
-			if($info[0] > 800 || $info[1] > 800 ) {
-
-              compress_image("images/$image", "build/C-85--$image", 85 );
-                } elseif( (strpos($image, 'default') !== false)) {
 	
-                    compress_image("images/$image", "build/C-35--$image", 35 ); 
-                } else{
+		if ($value) {
+			/*check for quality value and compare against with cases to decide by how much to reduce */
+			switch ($value) {
+				case $value <=30:
+				compress_image("images/$image", "build/O-$value-C-90--$image", 100); 
+				break;
+				case $value >30 && $value <=35:
+				compress_image("images/$image", "build/O-$value-C-93--$image", 93); 	
+				break;
+				case $value >35 && $value <=40:
+				compress_image("images/$image", "build/O-$value-C-90--$image", 90); 	
+				break;
+				case $value >40 && $value <=45:
+				compress_image("images/$image", "build/O-$value-C-87--$image", 87); 	
+				break;
+				case $value >45 && $value <=50:
+				compress_image("images/$image", "build/O-$value-C-84--$image", 84); 	
+				break;
+				case $value >50 && $value <=55:
+				compress_image("images/$image", "build/O-$value-C-81--$image", 81); 	
+				break;
+				case $value >55 && $value <=60:
+				compress_image("images/$image", "build/O-$value-C-78--$image", 78); 	
+				break;
+				case $value >60 && $value <=75:
+				compress_image("images/$image", "build/O-$value-C-75--$image", 75); 	
+				break;
+				case $value >75 && $value <=80:
+				compress_image("images/$image", "build/O-$value-C-72--$image", 72); 	
+				break;
+				case $value >80 && $value <=85:
+				compress_image("images/$image", "build/O-$value-C-69--$image", 69); 	
+				break;
+				case $value >85 && $value <=90:
+				compress_image("images/$image", "build/O-$value-C-66--$image", 66); 	
+				break;
+				case $value >90 && $value <=95:
+				compress_image("images/$image", "build/O-$value-C-63--$image", 63); 	
+				break;
+				case $value >95:
+				compress_image("images/$image", "build/O-$value-C-60--$image", 60); 	
+				break;
+				default:
+				compress_image("images/$image", "build/O-$value-C-85--$image", 85);  
+				break;
+				}	/*if the quality value isn't available or undefined compress based on image dimensions instead */
+					} else { 
+						switch ($info) {
+							case $info[0] >= 1200 || $info[1] >= 1200:
+							compress_image("images/$image", "build/C-93--$image", 93); 
+							break;
+							case $info[0] > 800 || $info[1] > 800:
+							compress_image("images/$image", "build/C-80--$image", 80); 
+							break;
+							case $info[0] > 400 || $info[1] > 400:
+							compress_image("images/$image", "build/C-60--$image", 60); 
+							break;	
+							case $info[0] <= 400 && $info[1] <= 400:
+							compress_image("images/$image", "build/C-35--$image", 35); 
+							break;
+							default:
+							compress_image("images/$image", "build/C-85--$image", 85);  
+							break;			
+						}		
+			}  					  	
 	
-                       compress_image("images/$image", "build/C-55--$image", 55 ); 
-            }
-	}  
-
 }
 
