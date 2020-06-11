@@ -48,40 +48,53 @@ foreach ($fileSystemIterator as $fileInfo){
 	$output2 = shell_exec("identify -format '%f: %Q' images/$image");
 	$stringvalue = substr($output2, -2); 
 	$value = (int) $stringvalue; 
+	$info = getimagesize("images/$image");
 
  if ($value) {
 	switch ($value) {
-		case $value <=50:
-			compress_image("images/$image", "build/85----$image", 85); 
+		case $value <=25:
+			compress_image("images/$image", "build/O-$value-C-90--$image", 90); 
+			break;
+		case $value >25 && $value <=50:
+			compress_image("images/$image", "build/O-$value-C-85--$image", 85); 	
 			break;
 		case $value >50 && $value <=60:
-			compress_image("images/$image", "build/75----$image", 75); 	
+		 	compress_image("images/$image", "build/O-$value-C-80--$image", 80); 	
 			break;
-		case $value >60 && $value <=70:
-			compress_image("images/$image", "build/70----$image", 70); 	
+		case $value >60 && $value <=65:
+			compress_image("images/$image", "build/O-$value-C-75--$image", 75); 	
 			break;
-		case $value >70 && $value <=80:
-			compress_image("images/$image", "build/65----$image", 65); 	
+		case $value >65 && $value <=75:
+			compress_image("images/$image", "build/O-$value-C-70--$image", 70); 	
 			break;
-		case  $value> 80:
-			compress_image("images/$image", "build/60----$image", 60); 
+		case $value >75 && $value <=85:
+			 compress_image("images/$image", "build/O-$value-C-65--$image", 65); 	
 			break;
+		case  $value > 85:
+			compress_image("images/$image", "build/O-$value-C-60--$image", 60);  
+		break;
+
+
+
+
+
+		
 		default:
-		compress_image("images/$image", "build/85----$image", 85); 
+			compress_image("images/$image", "build/O-$value-C-85--$image", 85);  
 		break;
 		}
 		} else { 
-			$info = getimagesize("images/$image");
-			
 			if($info[0] > 800 || $info[1] > 800 ) {
 
-				compress_image("images/$image", "build/85----$image", 85 ); 
-				} elseif( (strpos($image, 'default') !== false)) {
-
-					compress_image("images/$image", "build/35----$image", 35 ); 
-				} else{
-						compress_image("images/$image", "build/55----$image", 55 ); 
-			}  
+              compress_image("images/$image", "build/C-85--$image", 85 );
+                } elseif( (strpos($image, 'default') !== false)) {
+	
+                    compress_image("images/$image", "build/C-35--$image", 35 ); 
+                } else{
+	
+                       compress_image("images/$image", "build/C-55--$image", 55 ); 
+            }
 	}  
 
 }
+
