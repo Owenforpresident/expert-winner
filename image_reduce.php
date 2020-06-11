@@ -22,7 +22,7 @@ function compress_image($src, $dest , $quality)
 }
 
 
-/*takes file path to png image,  and maximum quality value for compression */
+/*takes file path to png image, and maximum quality value for compression */
 function compress_png($path_to_png_file, $max_quality )
 {   
     $min_quality = 25;
@@ -35,7 +35,7 @@ function compress_png($path_to_png_file, $max_quality )
     return $compressed_png_content;
 }
 
-/* Loop through images folder to build array of file paths as strings */
+/* Loops through directory 'images' to build array of file paths as strings */
 $fileSystemIterator = new FilesystemIterator('images');
 $entries = array();
 foreach ($fileSystemIterator as $fileInfo){
@@ -45,20 +45,43 @@ foreach ($fileSystemIterator as $fileInfo){
 /* for every file path in the entries array, find the image size and then set the compression amount and call compress function */
  foreach($entries as $image){ 
 
-	$info = getimagesize("images/$image");
-	/* images with a height or a width greater than those of a product image are reduced to 75% quality */
-	 if($info[0] > 800 || $info[1] > 800 ) {
+	$output2 = shell_exec("identify -format '%f: %Q' images/$image");
+	$stringvalue = substr($output2, -2); 
+	$value = (int) $stringvalue; 
 
-	 compress_image("images/$image", "build/$image", 75 ); 
-
-	} elseif( (strpos($image, 'default') !== false)) {
-
-		compress_image("images/$image", "build/$image", 25 ); 
-
-	} else{
-			/* Product images or smaller are reduced to 55% quality */
-			compress_image("images/$image", "build/$image", 55 ); 
+ if ($value) {
+	switch ($value) {
+		case $value <=50:
+			compress_image("images/$image", "build/85----$image", 85); 
+			break;
+		case $value >50 && $value <=60:
+			compress_image("images/$image", "build/75----$image", 75); 	
+			break;
+		case $value >60 && $value <=70:
+			compress_image("images/$image", "build/70----$image", 70); 	
+			break;
+		case $value >70 && $value <=80:
+			compress_image("images/$image", "build/65----$image", 65); 	
+			break;
+		case  $value> 80:
+			compress_image("images/$image", "build/60----$image", 60); 
+			break;
+		default:
+		compress_image("images/$image", "build/85----$image", 85); 
+		break;
 		}
- } 
+		} else { 
+			$info = getimagesize("images/$image");
+			
+			if($info[0] > 800 || $info[1] > 800 ) {
 
- ?> 
+				compress_image("images/$image", "build/85----$image", 85 ); 
+				} elseif( (strpos($image, 'default') !== false)) {
+
+					compress_image("images/$image", "build/35----$image", 35 ); 
+				} else{
+						compress_image("images/$image", "build/55----$image", 55 ); 
+			}  
+	}  
+
+}
