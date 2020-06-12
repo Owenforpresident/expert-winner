@@ -124,3 +124,8 @@ foreach ($fileSystemIterator as $fileInfo){
 	
 }
 
+/***************************************************************REFACTOR FOR IMPROVEMENT */
+
+/* check the image dimensions first then based on that decide how aggressive to reduce the quality based on they're inital quality */
+/* if $info[0]> 800 then start the switch statement for quality with a higher starting value for the level of quality reduction */
+/*so basically the large images will be reduced the least on average, but still reduced individually based on their quality */  
