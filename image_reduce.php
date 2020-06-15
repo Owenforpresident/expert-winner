@@ -1,29 +1,29 @@
 <?php 
 
 /* Main compression function, takes an image, destination and quality level  */
-function compress_image($src, $dest , $quality) 
+/* function compress_image($src, $dest , $quality) 
 { 
 	$info = getimagesize($src);
 	/*check image format */
-	if ($info["mime"] == "image/jpeg" ) 
+/*	if ($info["mime"] == "image/jpeg" ) 
 	{
 		$image = imagecreatefromjpeg($src);
 		/*reduces the image to quality, an saves it to destination */
-		imagejpeg($image, $dest, $quality);
-	}
+		 /* imagejpeg($image, $dest, $quality);
+/*	} 
 	elseif ($info["mime"] == "image/png") 
 	{
 		/* pngs handled seperately by compress_png function, result saved to destination */
-	file_put_contents($dest, compress_png($src, $quality)); 
+/*	file_put_contents($dest, compress_png($src, $quality)); 
 	}
 	else{
 		echo "Image type not recognized . . .$src";
 	}
-}
+} 
 
 
 /*takes file path to png image, and maximum quality value for compression */
-function compress_png($path_to_png_file, $max_quality )
+/* function compress_png($path_to_png_file, $max_quality )
 {   
     $min_quality = 25;
     $compressed_png_content = shell_exec("pngquant --quality=$min_quality-$max_quality - < ".escapeshellarg(    $path_to_png_file));
@@ -36,14 +36,14 @@ function compress_png($path_to_png_file, $max_quality )
 }
 
 /* Loops through directory 'images' to build array of file paths as strings */
-	$fileSystemIterator = new FilesystemIterator('images');
+/*	$fileSystemIterator = new FilesystemIterator('images');
 	$entries = array();
 foreach ($fileSystemIterator as $fileInfo){
     $entries[] = $fileInfo->getFilename();
 }
 
 /* for every file path in the entries array, find the image size and then set the compression amount and call compress function */
- foreach($entries as $image){ 
+/*  foreach($entries as $image){ 
 
 
 		$output2 = shell_exec("identify -format '%f: %Q' images/$image");
@@ -58,7 +58,7 @@ foreach ($fileSystemIterator as $fileInfo){
 	
 		if ($value) {
 			/*check for quality value and compare against with cases to decide by how much to reduce */
-			switch ($value) {
+		/*	switch ($value) {
 				case $value <=30:
 				compress_image("images/$image", "build/O-$value-C-90--$image", 100); 
 				break;
@@ -102,7 +102,7 @@ foreach ($fileSystemIterator as $fileInfo){
 				compress_image("images/$image", "build/O-$value-C-85--$image", 85);  
 				break;
 				}	/*if the quality value isn't available or undefined compress based on image dimensions instead */
-					} else { 
+					/* }/*  else { 
 						switch ($info) {
 							case $info[0] >= 1200 || $info[1] >= 1200:
 							compress_image("images/$image", "build/C-93--$image", 93); 
@@ -122,10 +122,5 @@ foreach ($fileSystemIterator as $fileInfo){
 						}		
 			}  					  	
 	
-}
+} 
 
-/***************************************************************REFACTOR FOR IMPROVEMENT */
-
-/* check the image dimensions first then based on that decide how aggressive to reduce the quality based on they're inital quality */
-/* if $info[0]> 800 then start the switch statement for quality with a higher starting value for the level of quality reduction */
-/*so basically the large images will be reduced the least on average, but still reduced individually based on their quality */  

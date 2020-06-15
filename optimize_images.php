@@ -10,10 +10,17 @@ $entries[] = $fileInfo->getFilename();
 //for each file, get the image quality, then call compress function with starting value of quality depending on the image dimensions
 foreach($entries as $image){
     $info = getimagesize("images/$image");
+
+    //this is the cmd for returning the 'quality' of an image, it is form the imagick library 
+                //identiy -format '%f:%Q' filename.jpg //    for single image files (for testing)
+    // will return the 'quality' of the jpg file 
     $output = shell_exec("identify -format '%f: %Q' images/$image");
+    //just keep the actualy value for quality
     $str = substr($output, -2); 
+    //turn it into a number for comparison operators
     $quality_test_value = (int) $str; 
 
+        //to start reductions at lower $maximum_compression_quality values based on the dimensions of the picture using switch
     switch ($info) {
         case $info[0] >= 1200 || $info[1] >= 1200:
         //for the biggest images(over 1200) call compress and start with 100 as the maximum value for quality
@@ -32,8 +39,12 @@ foreach($entries as $image){
         default:
              compress_image("images/$image", "build/O-$quality_test_value-MQ-85-X-$info[0]-Y-$info[1]-$image", 85, $quality_test_value, $info);  
         break;			
-    }		
-}
+    }	
+
+
+    //to reduce all images simply based on the $quality_test_value, with max_compresion_value of 80%
+  /*  compress_image("images/$image", "build/O-$quality_test_value-MQ-100-X-$info[0]-Y-$info[1]-$image", 80, $quality_test_value, $info); */
+} 
 
 function compress_image($src, $dest, $max_compression_quality, $quality_test_value, $info ) 
 {     
@@ -142,13 +153,13 @@ if ($info["mime"] == "image/jpeg" )
 }  else {
 		echo "Image type not recognized . . .$src";
 	}
-}
+} 
 
 //this is the function for compressing png files 
 function compress_png($path_to_png_file, $quality )
 {   
     //min_quality value needs to be below any number passed into the compress function,
-    //this is tricky because small low quality pngs can have very low values for quality passed to his function from the swtich statements above
+    //this is tricky because small low quality pngs can have very low values for quality passed to his function from the switch statements above
     //png quality is different to jpg, it is done by using a range of values (hence, min and max)
     $min_quality = 20;
     $compressed_png_content = shell_exec("pngquant --quality=$min_quality-$quality - < ".escapeshellarg( $path_to_png_file));
@@ -160,4 +171,5 @@ function compress_png($path_to_png_file, $quality )
     return $compressed_png_content;
 }
 
-?> 
+
+
